@@ -1,0 +1,13 @@
+{
+    "display_name": "Inventory UI",
+    "loading_order": 50,
+    "requires": [],
+    "optional": ["connection-manager"],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "jellysilly",
+    "version": "1.0.0",
+    "homePage": "https://github.com/jellysilly/ST-Inventory-UI",
+    "auto_update": true,
+    "generate_interceptor": "inventoryUIInterceptor"
+}
