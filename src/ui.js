@@ -225,8 +225,8 @@ export class InventoryUI {
     open() {
         this.mount();
         this.root.hidden = false;
-        this.applyPosition();
         this.render();
+        this.applyPosition();
         this.api.savePanelState(true);
     }
 
@@ -249,15 +249,22 @@ export class InventoryUI {
         const pos = this.api.getSettings().panelPos;
         const narrow = window.innerWidth < 640;
         this.root.classList.toggle('ivui-narrow', narrow);
-        if (narrow || !pos) {
+        this.root.classList.remove('ivui-centered');
+        if (narrow) {
             this.root.style.left = '';
             this.root.style.top = '';
-            this.root.classList.toggle('ivui-centered', !narrow);
             return;
         }
-        this.root.classList.remove('ivui-centered');
-        this.root.style.left = `${pos.x}px`;
-        this.root.style.top = `${pos.y}px`;
+        if (pos) {
+            this.root.style.left = `${pos.x}px`;
+            this.root.style.top = `${pos.y}px`;
+        } else {
+            // Center once in pixels: later height changes then grow the window downward
+            // instead of shifting the slots under the cursor (which breaks double-clicks).
+            const rect = this.root.getBoundingClientRect();
+            this.root.style.left = `${Math.max(0, Math.round((window.innerWidth - rect.width) / 2))}px`;
+            this.root.style.top = `${Math.max(8, Math.round((window.innerHeight - rect.height) / 2))}px`;
+        }
         this.clampPosition();
     }
 
@@ -265,12 +272,28 @@ export class InventoryUI {
         if (!this.isOpen) return;
         const narrow = window.innerWidth < 640;
         this.root.classList.toggle('ivui-narrow', narrow);
-        if (narrow || this.root.classList.contains('ivui-centered')) return;
+        if (narrow) {
+            this.root.style.maxHeight = '';
+            return;
+        }
         const rect = this.root.getBoundingClientRect();
         const x = Math.min(Math.max(0, rect.left), Math.max(0, window.innerWidth - rect.width));
         const y = Math.min(Math.max(0, rect.top), Math.max(0, window.innerHeight - 60));
         this.root.style.left = `${x}px`;
         this.root.style.top = `${y}px`;
+        this.fitHeight();
+    }
+
+    /** Limits the window to the space below its top edge; moves it up when that space is too small. */
+    fitHeight() {
+        if (!this.isOpen || this.root.classList.contains('ivui-narrow')) return;
+        const minUseful = Math.min(420, window.innerHeight - 16);
+        let top = this.root.getBoundingClientRect().top;
+        if (window.innerHeight - top - 8 < minUseful) {
+            top = Math.max(8, window.innerHeight - 8 - minUseful);
+            this.root.style.top = `${top}px`;
+        }
+        this.root.style.maxHeight = `${Math.floor(window.innerHeight - top - 8)}px`;
     }
 
     // ---------- Data helpers ----------
@@ -337,6 +360,7 @@ export class InventoryUI {
         }
         this.renderInfo();
         this.renderStatus();
+        this.fitHeight();
     }
 
     fillAvatar(el, url, large = false) {
@@ -447,7 +471,7 @@ export class InventoryUI {
         info.hidden = false;
         if (!item) {
             this.selected = null;
-            info.innerHTML = `<div class="ivui-note"><div class="ivui-note-text ivui-muted">${esc(t('hint_empty'))}</div></div>`;
+            info.innerHTML = `<div class="ivui-note"><div class="ivui-note-text ivui-note-hint ivui-muted">${esc(t('hint_empty'))}</div></div>`;
             return;
         }
         const others = this.owners().filter(o => o.key !== owner.key);
@@ -850,6 +874,7 @@ export class InventoryUI {
     endWindowMove() {
         this.move = null;
         this.root.classList.remove('ivui-moving');
+        this.fitHeight();
         const rect = this.root.getBoundingClientRect();
         const settings = this.api.getSettings();
         settings.panelPos = { x: Math.round(rect.left), y: Math.round(rect.top) };

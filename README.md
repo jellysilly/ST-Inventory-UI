@@ -15,10 +15,10 @@
 - **Свайпы, регенерации и удаления.** Каждое изменение трекера записывается в журнал и при свайпе или удалении сообщения откатывается. Ручные правки при этом сохраняются. При возврате к старому свайпу его результат применяется снова без нового запроса.
 - **Ожидание перед генерацией.** Если вы отправите сообщение, пока трекер ещё работает, генерация подождёт его, чтобы бот получил актуальный инвентарь.
 - **Несколько владельцев.** Можно вести инвентарь персонажа, персоны или обоих сразу, в группах — каждого участника. Предмет передаётся броском на вкладку другого персонажа.
-- **57 пиксельных иконок** (меч, зелье, ключ, телефон, сигареты, зонт…) и эмодзи. Цвет названия зависит от редкости, у редких предметов есть анимированный «блеск зачарования».
+- **58 пиксельных иконок** (меч, топор, уголь, зелье, ключ, телефон, зонт…) и эмодзи. Если модель не указала иконку, она подбирается по названию предмета. Цвет названия зависит от редкости, у редких предметов есть анимированный «блеск зачарования».
 - **Ручное редактирование.** Можно менять название, количество, иконку, редкость и описание. Закреплённый предмет 🔒 трекер не тронет.
 - Хотбар над полем ввода, уведомления об изменениях, отмена (Ctrl+Z), экспорт и импорт JSON.
-- Интерфейс на русском и английском, пиксельный шрифт с кириллицей (Pixelify Sans).
+- Интерфейс на русском и английском, шрифт в стиле Minecraft с кириллицей ([Monocraft](https://github.com/IdreesInc/Monocraft)); его можно отключить в настройках.
 
 ## Установка
 
@@ -82,7 +82,7 @@
 | Позиция / глубина / роль | в чате, 2, система | куда вставлять инвентарь |
 | Шаблон инъекции | — | `{{inventory}}` заменяется списком |
 | Промпт трекера | — | можно править; ответ должен быть JSON |
-| Хотбар, уведомления, пиксельный шрифт, размер слотов | — | внешний вид |
+| Хотбар, уведомления, шрифт Minecraft, размер слотов | — | внешний вид |
 
 Инвентарь хранится в метаданных чата, у каждого чата он свой. Ветка (branch) получает копию инвентаря, откаченную к сообщению, от которого она создана (в пределах последних 40 проанализированных сообщений).
 
@@ -101,7 +101,7 @@ node --test tests/logic.test.mjs
 - `src/sprites.js` — пиксельные иконки 16×16.
 - `src/textures.js` — процедурные текстуры (земля, трава, пергамент).
 
-Шрифт [Pixelify Sans](https://github.com/eifetx/Pixelify-Sans) распространяется по лицензии SIL Open Font License 1.1 (`fonts/OFL.txt`).
+Шрифт [Monocraft](https://github.com/IdreesInc/Monocraft) (© Idrees Hassan) распространяется по лицензии SIL Open Font License 1.1 (`fonts/OFL.txt`). В расширение включено подмножество: латиница и кириллица, без лигатур.
 
 ---
 
@@ -116,6 +116,6 @@ A Minecraft-style inventory for SillyTavern. After every AI message a separate, 
 - Swipes, regenerations, continues and deletions undo exactly what the tracker applied for that message. Cached swipes are re-applied without a new request.
 - Generation waits for a running tracker update, so the injected inventory is always current.
 - `{{inventory}}` macro, `/inventory`, `/inventory-scan`, `/inventory-add`, `/inventory-remove` and `/inventory-get` commands.
-- 57 pixel icons plus emoji, rarity colors with enchantment glint, locked items the AI can't change, undo, JSON export and import, Russian and English UI.
+- 58 pixel icons plus emoji (picked from the item name when the model gives none), the Monocraft Minecraft-style font, rarity colors with enchantment glint, locked items the AI can't change, undo, JSON export and import, Russian and English UI.
 
 **Install:** Extensions → Install extension → `https://github.com/jellysilly/ST-Inventory-UI`. Then save a cheap model as a Connection Manager profile and pick it in *Extensions → Inventory UI → Connection profile for the tracker*.

@@ -8,6 +8,7 @@ const PALETTE = {
     M: '#a3a3a3', // steel
     D: '#626262', // dark steel
     N: '#3b3b3b', // shadow
+    q: '#262626', // coal
     t: '#c99a5b', // light wood
     b: '#8f5a2b', // wood
     B: '#5a3618', // dark wood
@@ -70,22 +71,22 @@ export const SPRITES = {
         '................',
     ],
     axe: [
-        '..KKKK..........',
-        '.KLLLMKK....KtbK',
-        'KLWLLMMDK..KtbK.',
-        'KLLLLMMDDKKtbK..',
-        'KLLLLMMDDKtbK...',
-        'KLLLMMDDKtbK....',
-        '.KLMMDDKtbK.....',
-        '..KKKKKtbK......',
+        '....KKK.........',
+        '...KWWWK........',
+        '..KWWWLK....KK..',
+        '.KLWWLLK...KtbK.',
+        'KLLLLLMLK.KtbK..',
+        'KLLMDDDDLKtbK...',
+        'KLDKKKKDKtbK....',
+        '.KK....KtbK.....',
+        '......KtbK......',
         '.....KtbK.......',
         '....KtbK........',
         '...KtbK.........',
         '..KtbK..........',
         '.KtbK...........',
         'KtbK............',
-        'KKK.............',
-        '................',
+        '.KK.............',
     ],
     pickaxe: [
         '................',
@@ -699,6 +700,24 @@ export const SPRITES = {
         '................',
         '................',
     ],
+    coal: [
+        '................',
+        '................',
+        '.......KKK......',
+        '.....KKqNDK.....',
+        '....KqNDMqKK....',
+        '...KqNMLDqNqK...',
+        '..KqqNDqqqqNK...',
+        '..KqqqqqNMNqqK..',
+        '.KqNqqqNDLDqqK..',
+        '.KqqDNqqNDqqqqK.',
+        '.KqMDqqqqqqNqqK.',
+        '..KqqqqqNqqqqK..',
+        '...KKqqqqqqKK...',
+        '.....KKKqqK.....',
+        '........KK......',
+        '................',
+    ],
     log: [
         '................',
         '................',
@@ -1111,66 +1130,80 @@ export function spriteUrl(key, mono = false) {
     return cache.get(cacheKey);
 }
 
-// Name keywords (ru + en) used when the model gives no usable icon.
-const KEYWORDS = [
-    ['sword', /меч|клинок|сабл|катан|рапир|шпаг|sword|blade|katana|saber|sabre|rapier/i],
-    ['dagger', /кинжал|нож|стилет|dagger|knife|stiletto|dirk/i],
-    ['axe', /топор|секир|axe|hatchet/i],
-    ['pickaxe', /кирк|pick/i],
-    ['bow', /лук\b|арбалет|\bbow\b|crossbow/i],
-    ['arrow', /стрел|болт|arrow|bolt/i],
-    ['shield', /щит|shield|buckler/i],
-    ['staff', /посох|жезл|палоч|staff|wand|rod|scepter|sceptre/i],
-    ['gun', /пистолет|револьвер|ружь|винтовк|автомат|обрез|gun|pistol|revolver|rifle|shotgun/i],
-    ['helmet', /шлем|каск|helmet|helm/i],
-    ['chestplate', /доспех|кирас|латы|кольчуг|броня|бронежилет|armor|armour|chestplate|cuirass|mail/i],
-    ['leggings', /штан|брюк|джинс|поножи|юбк|шорт|pants|trousers|jeans|leggings|skirt|shorts|greaves/i],
-    ['boots', /сапог|ботин|туфл|кроссов|обув|кед|boots|shoes|sneakers|heels|footwear/i],
-    ['hat', /шляп|кепк|шапк|капюшон|берет|корон|hat|cap|hood|beret|crown/i],
-    ['shirt', /рубаш|рубах|футбол|куртк|пиджак|плать|свитер|кофт|худи|пальто|плащ|мантия|одежд|блуз|жилет|shirt|jacket|coat|dress|sweater|hoodie|cloak|robe|vest|blouse|uniform/i],
-    ['ring', /кольц|перстен|ring/i],
-    ['necklace', /ожерел|кулон|амулет|медальон|цепочк|подвеск|талисман|necklace|pendant|amulet|locket|talisman|charm/i],
-    ['glasses', /очк|монокл|glasses|goggles|spectacles|monocle/i],
-    ['potion', /зель|эликсир|снадоб|настойк|potion|elixir|tonic|draught/i],
-    ['bottle', /бутыл|фляг|флакон|вод[аы]|вино|пиво|сок|bottle|flask|water|wine|beer|juice|vial/i],
-    ['cup', /чашк|кружк|стакан|кофе|чай|cup|mug|glass of|coffee|tea/i],
-    ['apple', /яблок|фрукт|груш|apple|fruit|pear/i],
-    ['bread', /хлеб|булк|батон|пирож|бутерброд|сэндвич|печень|bread|loaf|bun|sandwich|cookie|pastry|biscuit/i],
-    ['meat', /мяс|окорок|колбас|стейк|ветчин|meat|ham|steak|sausage|jerky|bacon/i],
-    ['fish', /рыб|fish|salmon|cod/i],
-    ['mushroom', /гриб|mushroom|shroom/i],
-    ['key', /ключ|key/i],
-    ['book', /книг|дневник|блокнот|тетрад|журнал|гримуар|book|diary|journal|notebook|tome|grimoire/i],
-    ['scroll', /свит|scroll/i],
-    ['map', /карт[аые]?\b(?!очк)|map/i],
-    ['letter', /письм|конверт|записк|послани|letter|envelope|note|message/i],
-    ['money', /купюр|деньг|банкнот|рубл|доллар|евро|cash|money|bill|banknote|dollar/i],
-    ['coin', /монет|золот|серебр|медяк|coin|gold|silver|copper|penny/i],
-    ['card', /карточк|кредитк|пропуск|удостовер|паспорт|card|pass|badge|license|id\b/i],
-    ['gem', /камень|самоцвет|алмаз|бриллиант|рубин|сапфир|изумруд|кристалл? души|gem|jewel|diamond|ruby|sapphire|emerald/i],
-    ['crystal', /кристал|аметист|кварц|crystal|amethyst|quartz|shard/i],
-    ['orb', /сфер|шар|орб|orb|sphere|globe/i],
-    ['ingot', /слит|ingot|bar of/i],
-    ['stone', /камн|булыжн|руда|stone|rock|ore|pebble/i],
-    ['log', /бревн|дров|древесин|полен|log|firewood|lumber|plank/i],
-    ['stick', /палк|ветк|прут|stick|branch|twig/i],
-    ['bone', /кост|череп|bone|skull/i],
-    ['feather', /перо|пер[ья]|перь|feather|quill/i],
-    ['flower', /цвет[оы]к|цветы|роза|тюльпан|букет|трав|flower|rose|tulip|bouquet|herb/i],
-    ['torch', /факел|torch/i],
-    ['candle', /свеч|candle/i],
-    ['lantern', /фонар|лампа|светильн|lantern|lamp|flashlight/i],
-    ['rope', /верёвк|веревк|канат|шнур|rope|cord|string/i],
-    ['phone', /телефон|смартфон|мобильн|phone|smartphone|cellphone/i],
-    ['camera', /камер|фотоаппарат|camera/i],
-    ['cigarette', /сигарет|сигар|папирос|cigarette|cigar/i],
-    ['umbrella', /зонт|umbrella/i],
-    ['compass', /компас|compass/i],
-    ['clock', /часы|часик|будильник|clock|watch|pocket watch/i],
-    ['tool', /ножниц|плоскогуб|инструмент|отвёртк|отвертк|гаечн|молот|scissors|pliers|tool|wrench|screwdriver|hammer/i],
-    ['bag', /сумк|рюкзак|мешок|кошел|кошёл|портмоне|bag|backpack|pouch|purse|wallet|sack|satchel/i],
-    ['chest', /сундук|ящик|коробк|шкатулк|chest|box|crate|case/i],
+// Name keywords used when the model gives no usable icon. Order matters: the first match wins.
+// Russian entries are word beginnings (so declensions match), with optional regex tails;
+// English entries are whole words with an optional plural ending.
+const KEYWORD_TABLE = [
+    ['tool', 'ножниц плоскогуб инструмент отвертк гаечн молот клещ пил(?:а|у|ой)(?![а-я]) лопат', 'scissors pliers tool wrench screwdriver hammer saw shovel'],
+    ['sword', 'меч(?![а-я]) мечом меча клинок сабл катан рапир шпаг палаш ятаган', 'sword blade katana saber sabre rapier scimitar'],
+    ['dagger', 'кинжал нож стилет финк', 'dagger knife knives stiletto dirk'],
+    ['axe', 'топор секир колун', 'axe hatchet'],
+    ['pickaxe', 'кирк кайл', 'pickaxe pick'],
+    ['bow', 'лук(?:а|у|ом|и|ов)?(?![а-я]) арбалет', 'bow crossbow longbow'],
+    ['arrow', 'стрел болт', 'arrow bolt'],
+    ['shield', 'щит', 'shield buckler'],
+    ['staff', 'посох жезл палочк', 'staff wand rod scepter sceptre'],
+    ['gun', 'пистолет револьвер ружь винтовк автомат обрез дробовик', 'gun pistol revolver rifle shotgun'],
+    ['helmet', 'шлем каск', 'helmet helm'],
+    ['chestplate', 'доспех кирас лат(?:ы|ах|ами)(?![а-я]) кольчуг брон(?!з)', 'armor armour chestplate cuirass mail breastplate'],
+    ['leggings', 'штан брюк джинс понож юбк шорт лосин колготк', 'pants trousers jeans leggings skirt shorts greaves'],
+    ['boots', 'сапог ботин туфл кроссов обув кед тапк сандал', 'boot shoe sneaker heel footwear sandal'],
+    ['hat', 'шляп кепк шапк капюшон берет корон панам диадем', 'hat cap hood beret crown tiara'],
+    ['shirt', 'рубаш рубах футболк куртк пиджак плать свитер кофт худи пальто плащ мантия мантию одежд блуз жилет костюм форм(?:а|у|е)(?![а-я]) халат кимоно туник водолазк шарф', 'shirt jacket coat dress sweater hoodie cloak robe vest blouse uniform suit tunic kimono scarf'],
+    ['ring', 'кольц перстен', 'ring'],
+    ['necklace', 'ожерел кулон амулет медальон цепочк подвеск талисман бус оберег', 'necklace pendant amulet locket talisman charm'],
+    ['glasses', 'очк(?:и|ов|ами)(?![а-я]) монокл', 'glasses goggles spectacles monocle sunglasses'],
+    ['potion', 'зель эликсир снадоб настойк микстур лекарств таблетк', 'potion elixir tonic draught medicine pill'],
+    ['cup', 'чашк кружк стакан бокал кофе(?![а-я]) ча(?:й|я|ю|ем)(?![а-я])', 'cup mug coffee tea goblet'],
+    ['bottle', 'бутыл фляг флакон вод(?:а|ы|у|ой)(?![а-я]) вин(?:о|а)(?![а-я]) пив(?:о|а)(?![а-я]) сок(?:а|у|ом)?(?![а-я]) лимонад газировк', 'bottle flask water wine beer juice vial soda'],
+    ['apple', 'яблок фрукт груш апельсин банан ягод', 'apple fruit pear orange banana berry berries'],
+    ['bread', 'хлеб булк булочк батон пирож бутерброд сэндвич печень кекс пирог торт сухар бублик', 'bread loaf bun sandwich cookie pastry biscuit cake pie'],
+    ['meat', 'мяс окорок колбас стейк ветчин сосиск курин бекон котлет', 'meat ham steak sausage jerky bacon chicken'],
+    ['fish', 'рыб лосос селед', 'fish salmon cod herring'],
+    ['mushroom', 'гриб', 'mushroom shroom fungus'],
+    ['key', 'ключ(?!иц)', 'key'],
+    ['book', 'книг дневник блокнот тетрад журнал гримуар фолиант том(?:а|ик)?(?![а-я])', 'book diary journal notebook tome grimoire'],
+    ['scroll', 'свит', 'scroll'],
+    ['map', 'карт(?:а|ы|у|ой|е|ами)?(?![а-я])', 'map'],
+    ['letter', 'письм конверт записк послани открытк', 'letter envelope note message postcard'],
+    ['money', 'купюр деньг денег банкнот рубл доллар евро(?![а-я])', 'cash money bill banknote dollar'],
+    ['coin', 'монет золот серебр медяк', 'coin gold silver copper penny pennies'],
+    ['card', 'карточк кредитк пропуск удостовер паспорт билет визитк', 'card pass badge license licence id ticket passport'],
+    ['coal', 'уголь уголек угл(?:я|е|ем|и|ей|ями)(?![а-я])', 'coal charcoal'],
+    ['gem', 'самоцвет алмаз бриллиант рубин сапфир изумруд драгоцен', 'gem jewel diamond ruby sapphire emerald'],
+    ['crystal', 'кристал аметист кварц осколок', 'crystal amethyst quartz shard'],
+    ['orb', 'сфер шар(?:а|у|ом|ик)?(?![а-я]) орб', 'orb sphere globe ball'],
+    ['ingot', 'слит', 'ingot'],
+    ['stone', 'камен камн булыжн руд(?:а|ы|у)(?![а-я]) галь', 'stone rock ore pebble'],
+    ['log', 'бревн дров древесин полен доск', 'log firewood lumber plank wood'],
+    ['stick', 'палк ветк прут трост', 'stick branch twig cane'],
+    ['bone', 'кост(?:ь|и|ей|ями|яной|яная)(?![а-я]) череп', 'bone skull'],
+    ['feather', 'пер(?:о|а|ья|ьев|ышко)(?![а-я])', 'feather quill'],
+    ['flower', 'цвет(?:ок|ы|ов|ами|ка)(?![а-я]) цветоч роз(?:а|ы|у)(?![а-я]) тюльпан букет трав ромашк лили', 'flower rose tulip bouquet herb lily lilies'],
+    ['torch', 'факел', 'torch'],
+    ['candle', 'свеч', 'candle'],
+    ['lantern', 'фонар ламп светильн', 'lantern lamp flashlight'],
+    ['rope', 'веревк канат шнур бечевк нитк лент', 'rope cord string twine ribbon'],
+    ['phone', 'телефон смартфон мобильн', 'phone smartphone cellphone'],
+    ['camera', 'камер(?:а|у|ой|ы)(?![а-я]) фотоаппарат', 'camera'],
+    ['cigarette', 'сигар папирос зажигалк', 'cigarette cigar lighter'],
+    ['umbrella', 'зонт', 'umbrella'],
+    ['compass', 'компас', 'compass'],
+    ['clock', 'час(?:ы|ов|ами|ики)(?![а-я]) будильник', 'clock watch pocketwatch'],
+    ['bag', 'сумк рюкзак мешок мешоч кошел портмоне', 'bag backpack pouch purse wallet sack satchel'],
+    ['chest', 'сундук ящик коробк шкатулк кейс', 'chest box crate case casket'],
 ];
+
+const KEYWORDS = KEYWORD_TABLE.map(([key, ru, en]) => {
+    const ruPart = `(?<![а-я])(?:${ru.split(' ').join('|')})`;
+    const enPart = `(?<![a-z])(?:${en.split(' ').join('|')})(?:e?s)?(?![a-z])`;
+    return [key, new RegExp(`${ruPart}|${enPart}`, 'i')];
+});
+
+/** Lowercases and folds ё so keyword stems only need one spelling. */
+function foldName(text) {
+    return String(text ?? '').toLowerCase().replace(/ё/g, 'е');
+}
 
 const EMOJI_RE = /\p{Extended_Pictographic}/u;
 
@@ -1186,13 +1219,14 @@ export function resolveIcon(item) {
         if (SPRITES[key]) return { type: 'sprite', value: key };
         if (EMOJI_RE.test(icon)) return { type: 'emoji', value: Array.from(icon).slice(0, 2).join('') };
     }
-    const name = String(item?.name ?? '');
+    const name = foldName(item?.name);
     for (const [key, re] of KEYWORDS) {
         if (re.test(name)) return { type: 'sprite', value: key };
     }
     if (icon) {
+        const hint = foldName(icon);
         for (const [key, re] of KEYWORDS) {
-            if (re.test(icon)) return { type: 'sprite', value: key };
+            if (re.test(hint)) return { type: 'sprite', value: key };
         }
     }
     return { type: 'sprite', value: 'chest' };

@@ -144,6 +144,19 @@ test('icons resolve from keys, emoji and names', () => {
     assert.deepEqual(resolveIcon({ name: 'Something odd' }), { type: 'sprite', value: 'chest' });
 });
 
+test('icon keywords respect word boundaries', () => {
+    const cases = {
+        'Кусок угля': 'coal', 'Каменный уголь': 'coal', 'Угол комнаты': 'chest',
+        'Лук': 'bow', 'Лукошко': 'chest', 'Карта города': 'map', 'Карточка доступа': 'card',
+        'Костюм': 'shirt', 'Кость': 'bone', 'Ножницы': 'tool', 'Нож': 'dagger', 'Топор': 'axe',
+        'Шарф': 'shirt', 'Свиток': 'scroll', 'Ключица': 'chest', 'Чашка чая': 'cup', 'Песок': 'chest',
+        'Compass': 'compass', 'Squid ink': 'chest', 'Hammer': 'tool', 'Monkey toy': 'chest', 'Knives': 'dagger',
+    };
+    for (const [name, expected] of Object.entries(cases)) {
+        assert.equal(resolveIcon({ name }).value, expected, name);
+    }
+});
+
 test('sanitizeState repairs broken data', () => {
     const state = sanitizeState({
         owners: { a: { name: 'A', items: [{ name: 'X', slot: 'bag:0' }, { name: 'Y', slot: 'bag:0' }, { name: 'Z', slot: 'hot:99' }] } },
